@@ -12,7 +12,15 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY backend/requirements.txt .
+
+# Upgrade pip and setuptools (needed for openai-whisper build)
 RUN pip install --upgrade pip setuptools wheel
+
+# Install CPU-only PyTorch first (much smaller ~200MB vs ~2GB GPU version)
+# Railway has no GPUs, so GPU torch is wasted space
+RUN pip install --no-cache-dir torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+# Install remaining dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ ./backend/

@@ -17,8 +17,8 @@ psutil==5.9.8
 python-json-logger==2.0.7
 httpx==0.26.0
 email-validator==2.1.0
-torch>=2.1.0
-torchaudio>=2.1.0
+# torch and torchaudio are installed separately in Dockerfile (CPU-only for deployment)
+# For local dev with GPU: pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121
 TTS==0.22.0
 openai-whisper==20231117
 librosa==0.10.1
