@@ -19,8 +19,9 @@ RUN pip install --upgrade pip && pip install "setuptools==69.5.1" wheel
 # Install CPU-only PyTorch first (Railway has no GPUs)
 RUN pip install --no-cache-dir torch torchaudio --index-url https://download.pytorch.org/whl/cpu
 
-# Install openai-whisper (needs pkg_resources from setuptools<71)
-RUN pip install --no-cache-dir openai-whisper==20231117
+# Install openai-whisper with --no-build-isolation so it uses our pinned
+# setuptools==69.5.1 (which has pkg_resources) instead of downloading latest
+RUN pip install --no-cache-dir --no-build-isolation openai-whisper==20231117
 
 # Install remaining dependencies
 RUN pip install --no-cache-dir -r requirements.txt
