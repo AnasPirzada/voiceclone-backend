@@ -1,0 +1,17 @@
+frontend/
+node_modules/
+.next/
+backend/venv/
+backend/__pycache__/
+backend/data/
+backend/logs/
+backend/.env
+backend/.env.*
+*.pyc
+*.pyo
+*.md
+.git/
+.gitignore
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
