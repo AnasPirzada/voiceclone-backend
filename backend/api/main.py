@@ -10,14 +10,24 @@ from backend.config.redis_config import close_redis
 from backend.config.settings import settings
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Startup
     try:
+        logger.info("Starting database initialization...")
         await init_db()
+        logger.info("Database initialized successfully!")
     except Exception as e:
-        import logging
-        logging.warning(f"Database initialization failed (is PostgreSQL running?): {e}")
+        logger.error(f"DATABASE INITIALIZATION FAILED: {e}")
+        logger.error("Tables will NOT be created. Check DATABASE_URL env variable.")
+        # Don't crash the app - let health check show the error
     yield
+    # Shutdown
     try:
         await close_db()
     except Exception:
@@ -32,8 +42,8 @@ app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
     lifespan=lifespan,
-    docs_url="/docs" if settings.DEBUG else None,
-    redoc_url="/redoc" if settings.DEBUG else None,
+    docs_url="/docs",
+    redoc_url="/redoc",
 )
 
 setup_cors(app)
