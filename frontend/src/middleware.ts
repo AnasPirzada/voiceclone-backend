@@ -5,14 +5,15 @@ const PUBLIC_PATHS = ["/", "/auth/login", "/auth/register"];
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Allow public paths
   if (PUBLIC_PATHS.includes(pathname)) {
     return NextResponse.next();
   }
 
-  const token = request.cookies.get("next-auth.session-token")?.value
-    || request.cookies.get("__Secure-next-auth.session-token")?.value;
+  // Check for auth token in cookies (set by auth store)
+  const hasAuth = request.cookies.get("vc-auth")?.value;
 
-  if ((pathname.startsWith("/dashboard") || pathname.startsWith("/admin")) && !token) {
+  if ((pathname.startsWith("/dashboard") || pathname.startsWith("/admin") || pathname.startsWith("/studio")) && !hasAuth) {
     const loginUrl = new URL("/auth/login", request.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
@@ -22,5 +23,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*"],
+  matcher: ["/dashboard/:path*", "/admin/:path*", "/studio/:path*"],
 };

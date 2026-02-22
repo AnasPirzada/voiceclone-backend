@@ -23,7 +23,10 @@ export default function GeneratePage() {
       setResult(res);
       setJobId(null);
     }
-    if (status === "failed") setJobId(null);
+    if (status === "failed") {
+      setError("Generation failed. Please try again.");
+      setJobId(null);
+    }
   });
 
   const handleGenerate = async (data: TTSRequest) => {
@@ -42,10 +45,26 @@ export default function GeneratePage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">Text-to-Speech</h1>
+      <h1 className="text-2xl font-bold mb-2 text-white">Text-to-Speech</h1>
+      <p className="text-sm text-gray-400 mb-6">Generate speech using your cloned voice.</p>
+
       <TTSForm voices={trainedVoices} onSubmit={handleGenerate} isLoading={isLoading || !!jobId} />
-      {error && <p className="text-sm text-red-500 mt-4">{error}</p>}
-      {jobId && <p className="text-sm text-muted-foreground mt-4">Generating audio...</p>}
+
+      {error && (
+        <div className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
+          <p className="text-sm text-red-400">{error}</p>
+        </div>
+      )}
+
+      {jobId && (
+        <div className="mt-4 p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-xl">
+          <div className="flex items-center gap-3">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-400" />
+            <p className="text-sm text-indigo-400">Generating audio... This may take a moment.</p>
+          </div>
+        </div>
+      )}
+
       {result?.output_audio_url && (
         <div className="mt-6">
           <Player url={result.output_audio_url} title="Generated Audio" />

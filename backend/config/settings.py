@@ -43,7 +43,11 @@ class Settings(BaseSettings):
     STRIPE_PRICE_PRO: str = ""
     STRIPE_PRICE_ENTERPRISE: str = ""
 
-    CORS_ORIGINS: list[str] = ["http://localhost:3000"]
+    CORS_ORIGINS: list[str] = [
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "https://voiceclone-frontend.vercel.app",
+    ]
 
     MAX_UPLOAD_SIZE_MB: int = 50
     ALLOWED_AUDIO_FORMATS: list[str] = ["wav", "mp3", "flac", "ogg", "m4a"]

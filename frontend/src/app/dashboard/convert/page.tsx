@@ -23,7 +23,10 @@ export default function ConvertPage() {
       setResult(res);
       setJobId(null);
     }
-    if (status === "failed") setJobId(null);
+    if (status === "failed") {
+      setError("Conversion failed. Please try again.");
+      setJobId(null);
+    }
   });
 
   const handleConvert = async (voiceId: string, file: File, options: { language: string; pitch_shift: number; emotion: string | null }) => {
@@ -45,10 +48,26 @@ export default function ConvertPage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">Voice-to-Voice Conversion</h1>
+      <h1 className="text-2xl font-bold mb-2 text-white">Voice-to-Voice Conversion</h1>
+      <p className="text-sm text-gray-400 mb-6">Upload audio and convert it to your cloned voice.</p>
+
       <ConversionForm voices={trainedVoices} onSubmit={handleConvert} isLoading={isLoading || !!jobId} />
-      {error && <p className="text-sm text-red-500 mt-4">{error}</p>}
-      {jobId && <p className="text-sm text-muted-foreground mt-4">Converting audio...</p>}
+
+      {error && (
+        <div className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
+          <p className="text-sm text-red-400">{error}</p>
+        </div>
+      )}
+
+      {jobId && (
+        <div className="mt-4 p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-xl">
+          <div className="flex items-center gap-3">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-400" />
+            <p className="text-sm text-indigo-400">Converting audio... This may take a moment.</p>
+          </div>
+        </div>
+      )}
+
       {result?.output_audio_url && (
         <div className="mt-6">
           <Player url={result.output_audio_url} title="Converted Audio" />

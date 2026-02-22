@@ -13,7 +13,7 @@ interface VoiceStore {
   deleteVoice: (voiceId: string) => Promise<void>;
 }
 
-export const useVoiceStore = create<VoiceStore>((set, get) => ({
+export const useVoiceStore = create<VoiceStore>((set) => ({
   voices: [],
   selectedVoice: null,
   isLoading: false,
@@ -23,9 +23,14 @@ export const useVoiceStore = create<VoiceStore>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await voicesApi.list();
-      set({ voices: response.voices });
-    } catch (e: any) {
-      set({ error: e.message });
+      set({ voices: response.voices || [] });
+    } catch (e: unknown) {
+      // Silently handle 401 errors (user not authenticated yet)
+      const err = e as { response?: { status?: number }; message?: string };
+      if (err.response?.status !== 401) {
+        set({ error: err.message || "Failed to fetch voices" });
+      }
+      set({ voices: [] });
     } finally {
       set({ isLoading: false });
     }

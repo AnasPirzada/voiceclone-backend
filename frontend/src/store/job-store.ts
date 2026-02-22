@@ -22,13 +22,17 @@ export const useJobStore = create<JobStore>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await jobsApi.list(params);
-      const jobs = response.jobs;
+      const jobs = response.jobs || [];
       set({
         jobs,
         activeJobs: jobs.filter((j) => j.status === "queued" || j.status === "processing"),
       });
-    } catch (e: any) {
-      set({ error: e.message });
+    } catch (e: unknown) {
+      const err = e as { response?: { status?: number }; message?: string };
+      if (err.response?.status !== 401) {
+        set({ error: err.message || "Failed to fetch jobs" });
+      }
+      set({ jobs: [], activeJobs: [] });
     } finally {
       set({ isLoading: false });
     }
