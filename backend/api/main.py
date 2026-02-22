@@ -52,3 +52,15 @@ app.add_middleware(RateLimitMiddleware)
 app.add_middleware(RequestLoggingMiddleware)
 
 app.include_router(api_router, prefix="/api/v1")
+
+
+@app.get("/", tags=["root"])
+async def root():
+    """Root endpoint — confirms the API is running."""
+    return {
+        "name": settings.APP_NAME,
+        "version": settings.APP_VERSION,
+        "status": "running",
+        "docs": "/docs",
+        "health": "/api/v1/health",
+    }

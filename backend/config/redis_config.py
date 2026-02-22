@@ -12,6 +12,8 @@ async def get_redis() -> aioredis.Redis:
             encoding="utf-8",
             decode_responses=True,
             max_connections=20,
+            socket_connect_timeout=3,
+            socket_timeout=3,
         )
     return redis_client
 

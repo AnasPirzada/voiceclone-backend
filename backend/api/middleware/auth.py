@@ -6,6 +6,7 @@ from backend.services.auth.jwt_service import JWTService
 jwt_service = JWTService()
 
 PUBLIC_PATHS = {
+    "/",
     "/api/v1/health",
     "/api/v1/health/ready",
     "/api/v1/auth/register",
