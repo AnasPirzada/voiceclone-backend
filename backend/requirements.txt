@@ -20,7 +20,7 @@ email-validator==2.1.0
 # torch and torchaudio are installed separately in Dockerfile (CPU-only for deployment)
 # For local dev with GPU: pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121
 TTS==0.22.0
-openai-whisper==20231117
+# openai-whisper installed separately in Dockerfile with --no-build-isolation
 librosa==0.10.1
 soundfile==0.12.1
 scipy==1.12.0
